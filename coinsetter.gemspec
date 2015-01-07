@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Coinsetter::VERSION
   spec.authors       = ["Luis Galaviz"]
   spec.email         = ["galaviz.lm@gmail.com"]
-  spec.summary       = %q{TODO: Simple API connection to Coinsetter.}
-  spec.description   = %q{TODO: Simple API connection to Coinsetter.}
+  spec.summary       = %q{Simple API connection to Coinsetter.}
+  spec.description   = %q{Simple API connection to Coinsetter.}
   spec.homepage      = "https://github.com/MGalv/coinsetter"
   spec.license       = "MIT"
 
