@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency('activemodel', ['>= 4.1'])
   spec.add_runtime_dependency('activesupport', ['>= 4.1'])
-  spec.add_runtime_dependency('rest_client', ['= 1.7.3'])
+  spec.add_runtime_dependency('faraday', ['0.9.1'])
 end

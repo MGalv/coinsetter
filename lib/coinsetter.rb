@@ -5,7 +5,7 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_support/inflector'
 require 'active_model'
-require 'rest_client'
+require 'faraday'
 
 require "coinsetter/configuration"
 require "coinsetter/net"

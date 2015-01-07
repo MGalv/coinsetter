@@ -4,7 +4,7 @@ ruby '2.1.2'
 
 gem "activemodel", ">= 4.1"
 gem "activesupport", ">= 4.1"
-gem "rest_client", "1.7.3"
+gem "faraday", "0.9.1"
 
 group :development do
   gem "pry"
