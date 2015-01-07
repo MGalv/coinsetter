@@ -18,7 +18,6 @@ require "coinsetter/client_sessions"
 require "coinsetter/client_session"
 require "coinsetter/orders"
 require "coinsetter/order"
-require "coinsetter/order"
 
 String.send(:include, ActiveSupport::Inflector)
 
@@ -40,18 +39,19 @@ module Coinsetter
   end
 
   def self.with_session
-    session = Coinsetter::ClientSessions.new
+    session = ClientSessions.new
     client_session = session.create(credentials)
 
-    if client_session.kind_of? Coinsetter::ClientSession
+    if client_session.kind_of? ClientSession
       yield client_session if block_given?
+      client_session.destroy!
+    else
+      client_session
     end
-
-    client_session.destroy!
   end
 
   def self.orders
-    @@orders ||= Coinsetter::Orders.new
+    @@orders ||= Orders.new
   end
 
   def self.add_order(side='BUY', options={})
@@ -70,7 +70,7 @@ module Coinsetter
   end
 
   def self.sell_order(amount, price, account_uuid, options={})
-    add_order('BUY', options.merge(required_params(amount, price, account_uuid)))
+    add_order('SELL', options.merge(required_params(amount, price, account_uuid)))
   end
 
   def self.default_options

@@ -1,7 +1,7 @@
-module Bitstamp
+module Coinsetter
   module Net
     def self.uri(path)
-      return "#{Bitstamp.uri}#{path}"
+      return "#{Coinsetter.configuration.uri}#{path}"
     end
 
     def self.get(path, headers={})

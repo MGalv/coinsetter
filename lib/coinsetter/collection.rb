@@ -43,11 +43,12 @@ module Coinsetter
 
     private
     def parse
-      @parsed ||= if response["requestStatus"] == "SUCCESS"
-        Coinsetter::Helper.parse_object! response, model
-      else
-        Coinsetter::Helper.parse_message! response
-      end
+      @parsed ||=
+        if response.include? "\"requestStatus\":\"SUCCESS\""
+          Coinsetter::Helper.parse_object! response, model
+        else
+          Coinsetter::Helper.parse_message! response
+        end
     end
 
     def parse_collection
