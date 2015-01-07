@@ -1,16 +1,24 @@
 require "coinsetter/version"
 
 require 'json'
+require 'active_support'
 require 'active_support/core_ext'
 require 'active_support/inflector'
 require 'active_model'
 require 'rest_client'
 
 require "coinsetter/configuration"
-require "coinsetter/client_sessions"
 require "coinsetter/net"
 require "coinsetter/helper"
 require "coinsetter/model"
+require "coinsetter/collection"
+require "coinsetter/customer/accounts"
+require "coinsetter/customer/account"
+require "coinsetter/client_sessions"
+require "coinsetter/client_session"
+require "coinsetter/orders"
+require "coinsetter/order"
+require "coinsetter/order"
 
 String.send(:include, ActiveSupport::Inflector)
 
