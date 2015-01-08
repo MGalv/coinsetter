@@ -41,8 +41,8 @@ module Coinsetter
   def self.with_session
     if client_session.kind_of? ClientSession
       yield client_session if block_given?
-      destroy_client_session!
     else
+      destroy_client_session!
       {error: 'No Client Session available.'}
     end
   end
@@ -76,13 +76,26 @@ module Coinsetter
     accounts.list
   end
 
-  def self.add_order(side='BUY', options={})
-    with_session do |client_session|
+  def self.get_order(order_uuid)
+    orders.get(order_uuid)
+  end
+
+  def self.add_order_with_new_session(side='BUY', options={})
+    order = with_session do |client_session|
       params = default_options.merge(options)
       params.merge!(side: side,
                     customerUuid: client_session.customer_uuid)
       orders.create(params)
     end
+
+    order.kind_of?(Order) ? Coinsetter.get_order(order.uuid) : nil
+  end
+
+  def self.add_order(side='BUY', options={})
+    params = default_options.merge(options)
+    params.merge!(side: side,
+                  customerUuid: client_session.customer_uuid)
+    orders.create(params)
   end
 
   # Required Order Params
