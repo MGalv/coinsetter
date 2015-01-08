@@ -1,6 +1,6 @@
 module Coinsetter
   class Collection
-    attr_accessor :module, :name, :model, :path, :response, :headers, :session_uuid
+    attr_accessor :module, :name, :model, :path, :response, :session_uuid
 
     def initialize(uuid=nil)
       self.session_uuid = uuid ? {'coinsetter-client-session-id' => uuid} : {}
@@ -10,10 +10,10 @@ module Coinsetter
       self.name   = split_module.join('/')
       self.model  = self.module.camelize.constantize
       last = split_module.pop
-      self.path   = [split_module.join('/'), last.camelize(:lower)].join('/')
+      self.path = (split_module + [last.camelize(:lower)]).join('/')
     end
 
-    def create(route=path, options={}, headers={})
+    def create(options={}, route=path, headers={})
       headers.merge!(session_uuid)
       self.response = Coinsetter::Net.post(route, options, headers)
 

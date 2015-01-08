@@ -61,11 +61,11 @@ module Coinsetter
   end
 
   def self.orders(uuid=nil)
-    Orders.new(uuid)
+    Orders.new(uuid || client_session.uuid)
   end
 
   def self.accounts(uuid=nil)
-    Customer::Accounts.new(uuid)
+    Customer::Accounts.new(uuid || client_session.uuid)
   end
 
   def self.list_orders(account_id, view="OPEN")
