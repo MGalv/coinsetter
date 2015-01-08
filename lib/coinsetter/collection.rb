@@ -1,39 +1,36 @@
 module Coinsetter
   class Collection
-    attr_accessor :module, :name, :model, :path, :response
+    attr_accessor :module, :name, :model, :path, :response, :headers, :session_uuid
 
-    def initialize
+    def initialize(uuid=nil)
+      self.session_uuid = uuid ? {'coinsetter-client-session-id' => uuid} : {}
       self.module = self.class.name.singularize.underscore
       split_module = self.module.split('/')
       split_module.shift
       self.name   = split_module.join('/')
       self.model  = self.module.camelize.constantize
       last = split_module.pop
-      self.path   = split_module.join('/') + last.camelize(:lower)
+      self.path   = [split_module.join('/'), last.camelize(:lower)].join('/')
     end
 
-    def create(options={}, route=path)
-      if Coinsetter.configured?
-        self.response = Coinsetter::Net.post(route, options)
-      else
-        self.response = example
-      end
+    def create(route=path, options={}, headers={})
+      headers.merge!(session_uuid)
+      self.response = Coinsetter::Net.post(route, options, headers)
 
       parse
     end
 
-    def list(route=path, options={})
-      if Coinsetter.configured?
-        self.response = Coinsetter::Net.get(route, options)
-      else
-        self.response = example
-      end
+    def list(route=path, options={}, headers={})
+      headers.merge!(session_uuid)
+      self.response = Coinsetter::Net.get(route, options, headers)
 
       parse_collection
     end
 
-    def get(id, route=path, options={})
-      self.response = Coinsetter::Net.get("#{route}/#{id}", options)
+    def get(id, route=path, options={}, headers={})
+      headers.merge!(session_uuid)
+      self.response = Coinsetter::Net.get("#{route}/#{id}", options, headers)
+
       parse
     end
 
@@ -43,12 +40,11 @@ module Coinsetter
 
     private
     def parse
-      @parsed ||=
-        if response.include? "\"requestStatus\":\"SUCCESS\""
-          Coinsetter::Helper.parse_object! response, model
-        else
-          Coinsetter::Helper.parse_message! response
-        end
+      if response.include? "\"requestStatus\":\"SUCCESS\""
+        Coinsetter::Helper.parse_object! response, model
+      else
+        Coinsetter::Helper.parse_message! response
+      end
     end
 
     def parse_collection
