@@ -1,9 +1,13 @@
 module Coinsetter
   class Configuration
-    attr_accessor :username, :password, :ip_address, :uri
+    attr_accessor :username, :password, :ip_address, :staging
 
     def initialize
-      @uri = 'https://api.coinsetter.com/v1/'
+      @staging = false
+    end
+
+    def uri
+      "https://#{'staging-' if staging}api.coinsetter.com/v1/"
     end
   end
 end
