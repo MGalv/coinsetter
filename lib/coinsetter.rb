@@ -43,7 +43,7 @@ module Coinsetter
       yield client_session if block_given?
       destroy_client_session!
     else
-      client_session
+      {error: 'No Client Session available.'}
     end
   end
 
@@ -51,13 +51,29 @@ module Coinsetter
     @client_session ||= ClientSessions.new.create(credentials)
   end
 
+  def self.get_account(account_uuid)
+    Customer::Accounts.new(client_session.uuid).get(account_uuid)
+  end
+
   def self.destroy_client_session!
     client_session.destroy!
     @client_session = nil
   end
 
-  def self.orders
-    @@orders ||= Orders.new
+  def self.orders(uuid=nil)
+    Orders.new(uuid)
+  end
+
+  def self.accounts(uuid=nil)
+    Customer::Accounts.new(uuid)
+  end
+
+  def self.list_orders(account_id, view="OPEN")
+    orders.list("customer/account/#{account_id}/order", view: view)
+  end
+
+  def self.list_accounts
+    accounts.list
   end
 
   def self.add_order(side='BUY', options={})
