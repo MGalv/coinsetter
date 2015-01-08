@@ -27,10 +27,9 @@ module Coinsetter
 
     def self.put(path, args={}, headers={})
       res = connection.put do |req|
-        req.url path
-        req.headers["Accept"] = "application/json"
+        req.url path, args
+        req.headers['Content-Type'] = 'application/json'
         req.headers.merge!(headers)
-        req.body =  JSON.generate(args)
       end
 
       body(res)
@@ -47,10 +46,10 @@ module Coinsetter
     end
 
     def self.body(res)
-      if res.status == 403
-        "403 - Forbidden: You don't have permission to access"
-      else
+      if res.status == 200
         res.body
+      else
+        JSON.generate({status: res.status, message: res.body})
       end
     end
 
