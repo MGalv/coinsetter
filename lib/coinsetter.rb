@@ -39,15 +39,21 @@ module Coinsetter
   end
 
   def self.with_session
-    session = ClientSessions.new
-    client_session = session.create(credentials)
-
     if client_session.kind_of? ClientSession
       yield client_session if block_given?
-      client_session.destroy!
+      destroy_client_session!
     else
       client_session
     end
+  end
+
+  def self.client_session
+    @client_session ||= ClientSessions.new.create(credentials)
+  end
+
+  def self.destroy_client_session!
+    client_session.destroy!
+    @client_session = nil
   end
 
   def self.orders

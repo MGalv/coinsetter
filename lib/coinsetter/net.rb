@@ -5,36 +5,52 @@ module Coinsetter
     end
 
     def self.get(path, args={}, headers={})
-      connection.get do |req|
+      res = connection.get do |req|
         req.url path, args
         req.headers["Accept"] = "application/json"
         req.headers.merge!(headers)
       end
+
+      body(res)
     end
 
     def self.post(path, args={}, headers={})
-      connection.post do |req|
+      res = connection.post do |req|
         req.url path
         req.headers['Content-Type'] = 'application/json'
         req.headers.merge!(headers)
         req.body =  JSON.generate(args)
       end
+
+      body(res)
     end
 
     def self.put(path, args={}, headers={})
-      connection.put do |req|
+      res = connection.put do |req|
         req.url path
         req.headers["Accept"] = "application/json"
         req.headers.merge!(headers)
         req.body =  JSON.generate(args)
       end
+
+      body(res)
     end
 
     def self.delete(path, headers={})
-      connection.delete do |req|
+      res = connection.delete do |req|
         req.url path
         req.headers["Accept"] = "application/json"
         req.headers.merge!(headers)
+      end
+
+      body(res)
+    end
+
+    def self.body(res)
+      if res.status == 403
+        "403 - Forbidden: You don't have permission to access"
+      else
+        res.body
       end
     end
 
