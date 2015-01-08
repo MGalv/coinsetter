@@ -40,10 +40,10 @@ module Coinsetter
 
     private
     def parse
-      if response.include? "\"requestStatus\":\"SUCCESS\""
-        Coinsetter::Helper.parse_object! response, model
-      else
+      if response.include? "\"response\":\"error\""
         Coinsetter::Helper.parse_message! response
+      else
+        Coinsetter::Helper.parse_object! response, model
       end
     end
 

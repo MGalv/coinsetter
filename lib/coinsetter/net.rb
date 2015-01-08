@@ -49,7 +49,7 @@ module Coinsetter
       if res.status == 200
         res.body
       else
-        JSON.generate({status: res.status, message: res.body})
+        JSON.generate({response: "error", status: res.status, message: res.body})
       end
     end
 
