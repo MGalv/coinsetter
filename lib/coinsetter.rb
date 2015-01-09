@@ -38,7 +38,8 @@ module Coinsetter
     configuration.username && configuration.password && configuration.ip_address
   end
 
-  def self.with_session
+  def self.with_new_session
+    destroy_client_session!
     if client_session.kind_of? ClientSession
       yield client_session if block_given?
     else
@@ -56,7 +57,11 @@ module Coinsetter
   end
 
   def self.destroy_client_session!
+    begin
     client_session.destroy!
+    rescue e
+      # TODO: Add error responses.
+    end
     @client_session = nil
   end
 
@@ -80,22 +85,13 @@ module Coinsetter
     orders.get(order_uuid)
   end
 
-  def self.add_order_with_new_session(side='BUY', options={})
-    order = with_session do |client_session|
+  def self.add_order(side='BUY', options={})
+    with_new_session do |client_session|
       params = default_options.merge(options)
       params.merge!(side: side,
                     customerUuid: client_session.customer_uuid)
       orders.create(params)
     end
-
-    order.kind_of?(Order) ? Coinsetter.get_order(order.uuid) : nil
-  end
-
-  def self.add_order(side='BUY', options={})
-    params = default_options.merge(options)
-    params.merge!(side: side,
-                  customerUuid: client_session.customer_uuid)
-    orders.create(params)
   end
 
   # Required Order Params
